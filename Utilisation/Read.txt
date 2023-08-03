@@ -1,0 +1,15 @@
+Author: Marwane
+Date: 01/08/2023
+Version: 1.0
+
+How can I run the tool:
+
+1 - Run "setup" (wait the installation of library)
+2 - Run "main.py"
+3 - Click on "Auto Git" (open https://github.com/new)
+4 - Add name ,status...
+6 - copy  link
+7 - paste link
+8 - Entrer le chemin du dossier
+9 - Valider
+10- Rafraichir la page github
