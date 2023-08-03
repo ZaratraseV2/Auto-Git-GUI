@@ -1,15 +1,26 @@
 Author: Marwane
 Date: 01/08/2023
-Version: 1.0
+Version: 1.1
 
 How can I run the tool:
 
-1 - Run "setup" (wait the installation of library)
-2 - Run "main.py"
-3 - Click on "Auto Git" (open https://github.com/new)
-4 - Add name ,status...
-6 - copy  link
-7 - paste link
-8 - Entrer le chemin du dossier
-9 - Valider
-10- Rafraichir la page github
+For create a New Repository
+
+	1 - Run "setup" (wait the installation of library)
+	2 - Run "main.py"
+	3 - Click on "Auto Git" (open https://github.com/new)
+	4 - Add name ,status...
+	6 - copy  link 
+	7 - paste link
+	8 - Entrer le chemin du dossier
+	9 - Valider
+	10- Rafraichir la page github
+
+
+For Add/Replace Files at a Repositories
+
+1 - Run "main.py"
+2 - Copy/Paste Repository-link 
+3 - Copy/Paste Racine Folder
+4 - Copy/Paste Folder when there are files 
+5 - Valider
