@@ -8,7 +8,7 @@
 # Requierments
 Vous devez avoir git d'installer et configurer au préalable.
 
-![image](https://github.com/ZaratraseV2/Auto-Git-GUI/assets/122055075/27020c93-38df-4893-926b-7a91113fa455)
+![image](https://github.com/ZaratraseV2/Auto-Git-GUI/assets/122055075/b60de103-eb6b-4497-ba7c-4f973d57a3ee)
 
 
 
