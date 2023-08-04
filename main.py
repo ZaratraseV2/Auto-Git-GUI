@@ -1,35 +1,32 @@
 import git
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QVBoxLayout, QDesktopWidget
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import Qt
 import webbrowser
-from git import Repo 
+from git import Repo
 import os
 import shutil
-
+import time
+import tempfile
 
 app = QApplication(sys.argv)
 app.setStyle('Fusion') 
 
 
-
 ############################################ Fenetre 1 ############################################
 
 def open_root1():
-    global main, root, root2
-    main_pos = main.pos()
+    global main, root, root2  
     main.hide()
-    root.setGeometry(main_pos.x(), main_pos.y(), 400, 400)
     root.show()
+    center_window(root) 
 
 def open_root2():
-    global main, root, root2
-    main_pos = main.pos()
+    global main, root, root2 
     main.hide()
-    root2.setGeometry(main_pos.x(), main_pos.y(), 400, main.height() + 70)  
     root2.show()
-
+    center_window(root2) 
 
 def algo():
     lien = entry1.text()
@@ -43,22 +40,31 @@ def algo():
             remote_exists = True
             break
     if not remote_exists:
-        chargement.setText(f"Ajout du dépôt distant 'origin' avec l'URL: {lien}...")
         repo.create_remote("origin", url=lien)
     repo.git.branch("-M", "main")
     repo.git.push("--set-upstream", "origin", "main")
+    info2.setText("Fichiers envoyés avec succès !")
+    info2.adjustSize()
     QMessageBox.information(message, "Auto Git", "Dossier envoyé avec succès !")
     entry1.clear()
     entry2.clear()
     entry3.clear()  
     entry4.clear()
-    entry5.clear()
 
+def center_window(window):
+    screen_geometry = QDesktopWidget().screenGeometry()
+    window_geometry = window.frameGeometry()
+    x_position = (screen_geometry.width() - window_geometry.width()) // 2
+    y_position = (screen_geometry.height() - window_geometry.height()) // 2
+    window.move(x_position, y_position)
 
 def label_click(event):
     webbrowser.open("https://github.com/new")
+def open_github(event):
+    webbrowser.open("https://github.com/ZaratraseV2")
 
 ###################################################################################################
+
 
 
 ############################################ Fenetre 2 ############################################
@@ -66,9 +72,11 @@ def label_click(event):
 def fermer_fenetre(event):
     global main, root, root2
     if root.isVisible():
+        center_window(main)
         root.hide()
         main_pos = root.pos()
     elif root2.isVisible():
+        center_window(main)
         root2.hide()
         main_pos = root2.pos()
     main.setGeometry(main_pos.x(), main_pos.y(), 400, 400)
@@ -77,23 +85,24 @@ def fermer_fenetre(event):
     entry2.clear()
     entry3.clear()  
     entry4.clear()
-    entry5.clear()
-
 
 
 def clone_replace_send():
+    global info
     lien_clone = entry3.text()
-    faux_destination = entry4.text()
-    dossier_a_clone = entry5.text()
+    faux_destination = tempfile.mkdtemp()
+    dossier_a_clone = entry4.text()
     segments = lien_clone.split('/')
     name_seg = segments[-1]
     fin_path = name_seg.rstrip('.git')
     destination_path = "\\".join((faux_destination,fin_path))
 
     # Clonage de Github a PV
-    print("-Clonage...")
+    info.setText("Clonage...")
+    info.adjustSize()
     Repo.clone_from(lien_clone, destination_path)
-    print("-Clonage réussit")
+    info.setText("Clonage réussit")
+    info.adjustSize()
 
     # Déplacement les fichiers au fichier destination
     for fichier in os.listdir(dossier_a_clone):
@@ -110,12 +119,16 @@ def clone_replace_send():
     repo.git.add(all=True)
     repo.git.commit(m="Modification des fichiers", allow_empty=True)
     repo.git.push("--set-upstream", "origin", "main")
+    info.setText("Fichiers envoyés avec succès !")
+    info.adjustSize()
     QMessageBox.information(message, "Auto Git", "Fichiers envoyés avec succès !")
     entry3.clear()  
     entry4.clear()
-    entry5.clear()
+    time.sleep(3)
+    info.setText("")
 
 ###################################################################################################
+
 
 
 
@@ -126,7 +139,12 @@ main.setStyleSheet("""
     background-color: #0D1117;
     font-family: Arial, sans-serif;
 """)
-main.setGeometry(100, 100, 400, 400)
+main_width = 400
+main_height = 400
+screen_geometry = QDesktopWidget().screenGeometry()
+main_x = (screen_geometry.width() - main_width) // 2
+main_y = (screen_geometry.height() - main_height) // 2
+main.setGeometry(main_x, main_y, main_width, main_height)
 main.setWindowIcon(QIcon("./Icon/git_logo.ico"))
 
 text_title = QLabel("Auto Git", main)
@@ -136,6 +154,7 @@ text_title.setStyleSheet("""
     font-size: 30px;
 """)
 text_title.move(150, 30)
+text_title.adjustSize()
 
 push = QPushButton("Crée un Repository", main)
 push.setGeometry(300, 500, 300, 45)
@@ -158,7 +177,6 @@ push.setStyleSheet("""
 push.move(50,140)
 push.clicked.connect(open_root1)
 
-
 clone = QPushButton("Remplacer un Repository", main)
 clone.setGeometry(300, 500, 300, 45)
 clone.setStyleSheet("""
@@ -180,12 +198,24 @@ clone.setStyleSheet("""
 clone.move(50,220)
 clone.clicked.connect(open_root2)
 
+layout = QVBoxLayout(main)
+layout.setAlignment(Qt.AlignCenter)
 
+github_layout = QVBoxLayout()
+github_layout.addStretch(1)
+github = QLabel(main)
+pixmap = QPixmap("./Icon/github3.png").scaled(80, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+github.setPixmap(pixmap)
+github.setAlignment(Qt.AlignCenter)
+github.setCursor(Qt.PointingHandCursor)
+github.mousePressEvent = open_github
+github_layout.addWidget(github)
+layout.addLayout(github_layout)
 
 
 # FENETRE1 
 root = QWidget()
-root.setWindowTitle("Auto git")
+root.setWindowTitle("Auto git - Crée un Repository")
 root.setStyleSheet("""
     background-color: #0D1117;
     font-family: Arial, sans-serif;
@@ -248,13 +278,13 @@ entry2.setStyleSheet("""
 entry2.setGeometry(150, 250, 250, 35)
 entry2.move(80, 220)
 
-chargement = QLabel("", root)
-chargement.setStyleSheet("""
-    color: #ff8c00;
-    font-family: Halvetica, sans-serif;
-    font-size: 12px;
+info2 = QLabel("", root)
+info2.setStyleSheet("""
+    color: green;
+    font-family: Halvetica;
+    font-size: 11px;
 """)
-chargement.move(130, 260)
+info2.move(135, 270)
 
 button = QPushButton("Valider", root)
 
@@ -276,20 +306,19 @@ button.setStyleSheet("""
     }
 """)
 button.clicked.connect(algo)
+button.move(145, 320)
 root.hide()
-
-
 
 
 
 # Fenetre 2
 root2 = QWidget()
-root2.setWindowTitle("Auto git")
+root2.setWindowTitle("Auto git - Remplacer un Repository")
 root2.setStyleSheet("""
     background-color: #0D1117;
     font-family: Arial, sans-serif;
 """)
-root2.setGeometry(200, 200, 600, 600)
+root2.setGeometry(100, 100, 400, 400)
 root2.setWindowIcon(QIcon("./Icon/git_logo.ico"))
 
 fleche = QLabel(root2)
@@ -297,7 +326,7 @@ pixmap = QPixmap("./Icon/fleche.png").scaled(40, 40, Qt.KeepAspectRatio, Qt.Smoo
 fleche.setPixmap(pixmap)
 fleche.setGeometry(5, 5, pixmap.width(), pixmap.height())
 fleche.setCursor(Qt.PointingHandCursor)
-fleche.mousePressEvent = fermer_fenetre
+fleche.mousePressEvent = fermer_fenetre 
 
 
 text_title = QLabel("Auto Git", root2)
@@ -306,7 +335,7 @@ text_title.setStyleSheet("""
     font-family: Halvetica;
     font-size: 30px;
 """)
-text_title.move(150, 30)
+text_title.move(145, 30)
 text_title.setCursor(Qt.PointingHandCursor)
 text_title.mousePressEvent = label_click
 
@@ -316,8 +345,8 @@ text_lien.setStyleSheet("""
     font-family: Halvetica, sans-serif;
     font-size: 18px;
 """)
+text_lien.move(85, 110)
 
-text_lien.move(80, 110)
 
 entry3 = QLineEdit(root2)
 entry3.setStyleSheet("""
@@ -327,15 +356,15 @@ entry3.setStyleSheet("""
     font-size: 12px;
 """)
 entry3.setGeometry(150, 250, 250, 35)
-entry3.move(80, 140)
-dossier_destination = QLabel("Dossier Destination", root2)
-dossier_destination.setStyleSheet("""
+entry3.move(85, 140)
+
+text_chemin = QLabel("Chemin du Dossier", root2)
+text_chemin.setStyleSheet("""
     color: #ffffff;
     font-family: Halvetica, sans-serif;
     font-size: 18px;
 """)
-dossier_destination.move(80, 200)
-
+text_chemin.move(85, 190)
 
 entry4 = QLineEdit(root2)
 entry4.setStyleSheet("""
@@ -345,27 +374,15 @@ entry4.setStyleSheet("""
     font-size: 13px;               
 """)
 entry4.setGeometry(150, 250, 250, 35)
-entry4.move(80, 230)
+entry4.move(85, 220)
 
-
-dossier_référence = QLabel("Nouveau Dossier", root2)
-dossier_référence.setStyleSheet("""
-    color: #ffffff;
-    font-family: Halvetica, sans-serif;
-    font-size: 18px;
+info = QLabel("", root2)
+info.setStyleSheet("""
+    color: green;
+    font-family: Halvetica;
+    font-size: 11px;
 """)
-dossier_référence.move(80, 290)
-
-entry5 = QLineEdit(root2)
-entry5.setStyleSheet("""
-    color: white;
-    border: 2px solid #6E2BF1;
-    border-radius: 5px;  
-    font-size: 13px;               
-""")
-entry5.setGeometry(150, 250, 250, 35)
-entry5.move(80, 320)
-
+info.move(135, 270)
 
 button = QPushButton("Valider", root2)
 button.setGeometry(150, 320, 120, 40)
@@ -385,9 +402,9 @@ button.setStyleSheet("""
         color: white;
     }
 """)
-
 button.clicked.connect(clone_replace_send)
-button.move(140, 400)
+button.move(145, 320)
+
 
 message = QWidget()
 message.setWindowTitle("Information")
@@ -400,5 +417,13 @@ message.setGeometry(200, 200, 600, 600)
 message.setWindowIcon(QIcon("./Icon/git_logo.ico"))
 message.hide()
 
+github = QLabel(root2)
+pixmap = QPixmap("./Icon/github.png").scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+github.setPixmap(pixmap)
+github.setGeometry(5, 5, pixmap.width(), pixmap.height())
+github.setCursor(Qt.PointingHandCursor)
+github.mousePressEvent = fermer_fenetre 
+
 main.show()
+
 sys.exit(app.exec_())
