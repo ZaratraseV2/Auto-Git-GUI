@@ -1,5 +1,5 @@
 # Auto-Git-GUI
-![image](https://github.com/ZaratraseV2/Auto-Git-GUI/assets/122055075/b106d4b8-cb7a-41b1-98c3-ec68db1580c9)
+![image](https://github.com/ZaratraseV2/Auto-Git-GUI/assets/122055075/2c28389b-bb30-4bf1-bed1-eb4d8f01edfb)
 
 
 
