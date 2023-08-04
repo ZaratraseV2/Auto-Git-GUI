@@ -5,3 +5,5 @@ pip install webbrowser
 pip install sys
 pip install os 
 pip install shutil
+pip install tempfile
+pip install time 
