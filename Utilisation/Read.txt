@@ -4,7 +4,7 @@ Version: 1.4
 
 How can I run the tool:
 
-For create a New Repository
+- For create a New Repository
 
 	1 - Run "setup" (wait the installation of library)
 	2 - Run "main.py"
@@ -17,10 +17,10 @@ For create a New Repository
 	10- Rafraichir la page github
 
 
-For Add/Replace Files at a Repositories
+- For Add/Replace Files at a Repositories
 
-1 - Run "main.py"
-2 - Copy/Paste Repository-link 
-3 - Copy/Paste Folder when there are files 
-5 - Valider
+	1 - Run "main.py"
+	2 - Copy/Paste Repository-link 
+	3 - Copy/Paste Folder when there are files 
+	5 - Valider
 
