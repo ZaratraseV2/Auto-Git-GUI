@@ -1,6 +1,6 @@
 Author: Marwane
 Date: 01/08/2023
-Version: 1.2
+Version: 1.4
 
 How can I run the tool:
 
@@ -21,6 +21,6 @@ For Add/Replace Files at a Repositories
 
 1 - Run "main.py"
 2 - Copy/Paste Repository-link 
-3 - Copy/Paste Racine Folder
-4 - Copy/Paste Folder when there are files 
+3 - Copy/Paste Folder when there are files 
 5 - Valider
+
