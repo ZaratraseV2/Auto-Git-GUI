@@ -1,5 +1,5 @@
 @echo off
-pip install git
+pip install GitPython
 pip install PyQt5
 pip install webbrowser
 pip install sys
